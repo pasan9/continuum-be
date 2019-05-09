@@ -1,5 +1,5 @@
 class Paths:
-    audio_path = '../audio'
-    midi_path = '../midi'
+    audio_path = '../audio/'
+    midi_path = '../midi/'
 
 
