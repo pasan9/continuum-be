@@ -1,8 +1,14 @@
 from deap import algorithms, base, creator, tools
 from definitions.Guitar import Guitar
+import copy
 import numpy as np
+import random
 
-def get_placements(guitar,segment,previous_segment):
+# Set Fitness and Individual Types
+creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
+creator.create("Individual", list, fitness=creator.FitnessMin)
+
+def get_seq_placements(guitar,segment,previous_segment):
     # Population size and tourn select size: TODO Make them depend on the segment size
     population_size = 300
     tournament_selection_size = 3
@@ -15,10 +21,11 @@ def get_placements(guitar,segment,previous_segment):
     # Functions for creating and mutating individuals
 
     def create_individual(ind_segment=segment):
-        individual = []
-        for note_val in ind_segment:
-            individual.append(toolbox.gene(note_val))
-        return individual
+        #individual_segment = copy.deepcopy(ind_segment)
+        # individual = []
+        for note in ind_segment.notes:
+            note.position = toolbox.gene(note.value)
+        return segment.notes
 
 
     def evalInd(individual):
@@ -26,51 +33,47 @@ def get_placements(guitar,segment,previous_segment):
 
         #Difference between last note played in previous segment, and first note in current segment
         difference_with_previous_segment = 0
-        if(previous_result):
-            difference_with_previous_segment += abs(previous_result[-1][1]-individual[0][1])
+        if(previous_segment):
+            difference_with_previous_segment += abs(previous_segment[-1].position[1]-individual[0].position[1])
 
 
-        min_fret = individual[0][1]
+        min_fret = individual[0].position[1]
         max_fret = 0
 
-        for position in individual:
+        for note in individual:
             #Calculate string depressions
-            if(position[1] != 0): #Fret val is not 0
+            if(note.position[1] != 0): #Fret val is not 0
                 no_strings_depressed += 1
 
             #Calculate total fretspan
-            if (position[1] > max_fret):
-                max_fret = position[1]
-            if (position[1] < min_fret):
-                min_fret = position[1]
+            if (note.position[1] > max_fret):
+                max_fret = note.position[1]
+            if (note.position[1] < min_fret):
+                min_fret = note.position[1]
 
         total_fret_span = max_fret - min_fret
 
         total_fitness = total_fret_span + difference_with_previous_segment
 
-        if(style == 'fin'):
-            total_fitness += no_strings_depressed
-
         return (total_fitness),
 
     def mutate_ran_reset(individual):  # Does Random Resetting if possible
         # Get indexes and possible mutations of genes where mutation is possible to mutation dict
-        # {gene_index:[possible mutations array]}
+        # {Note_index:[possible position mutations array]}
         mutation_genes = dict()
-        for i, gene in enumerate(individual):
-            note_val = guitar.get_note_from_position(gene)
-            positions = guitar.get_positions(note_val)
+        for i,note in enumerate(individual):
+            positions = guitar.get_positions(note.value)
             if (len(positions) > 1):
                 mutation_genes[i] = positions
         # If there are mutatable genes
         if (mutation_genes):  # Bool(dict) returns false for empty
-            # Get a random gene index
+            # Get a random Note index
             mut_index = random.choice(list(mutation_genes))  # list(dict) returns list of keys
             # Remove the current position from possible mutations
             possible_mutations = mutation_genes[mut_index]
-            possible_mutations.remove(individual[mut_index])
-            new_gene = random.choice(possible_mutations)
-            individual[mut_index] = new_gene
+            possible_mutations.remove(individual[mut_index].position)
+            #Assign New position
+            individual[mut_index].position = random.choice(possible_mutations)
         return individual,
 
 
@@ -82,10 +85,7 @@ def get_placements(guitar,segment,previous_segment):
     toolbox.register("evaluate", evalInd)
     toolbox.register("mate", tools.cxTwoPoint)
     toolbox.register("mutate", mutate_ran_reset)
-    if(type=="cho"):
-        toolbox.register("select", tools.selNSGA2)
-    else:
-        toolbox.register("select", tools.selTournament, tournsize=tournament_selection_size)
+    toolbox.register("select", tools.selTournament, tournsize=tournament_selection_size)
 
     #Evolution Starts
     NGEN = 50
@@ -108,4 +108,7 @@ def get_placements(guitar,segment,previous_segment):
     #Get best individual : SelBest returns a list, get the first value
     best_ind = tools.selBest(pop, 1)[0]
 
-    return best_ind
+    print(best_ind)
+
+
+    #return best_ind

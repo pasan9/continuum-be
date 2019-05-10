@@ -1,5 +1,6 @@
 from modules import Note_extractor,Note_arranger,Note_locator
 from definitions.config import Paths
+from definitions.Guitar import Guitar
 import librosa
 
 midi_path = Paths.midi_path
@@ -17,7 +18,12 @@ notes = Note_extractor.get_melody(file_path)
 #Create the midi file from notes
 Note_arranger.make_midi(notes,tempo)
 
-Note_locator.segment_midi(midi_file_path,'lead')
+guitar = Guitar(6,24)
+
+Note_locator.arrange(guitar,midi_file_path,'lead')
+
+
+
 
 
 
