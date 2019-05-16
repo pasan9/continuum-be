@@ -1,4 +1,4 @@
-from modules import Note_extractor,Note_arranger,Note_locator
+from modules import Note_extractor,Note_arranger,Note_locator,Tab_constructor
 from definitions.config import Paths
 from definitions.Guitar import Guitar
 import librosa
@@ -20,7 +20,9 @@ Note_arranger.make_midi(notes,tempo)
 
 guitar = Guitar(6,24)
 
-Note_locator.arrange(guitar,midi_file_path,'lead')
+arrangement = Note_locator.arrange(guitar,midi_file_path,'lead')
+
+tab_string = Tab_constructor.getAlphaTex(arrangement,midi_file_path)
 
 
 

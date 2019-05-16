@@ -108,7 +108,9 @@ def get_seq_placements(guitar,segment,previous_segment):
     #Get best individual : SelBest returns a list, get the first value
     best_ind = tools.selBest(pop, 1)[0]
 
-    print(best_ind)
+    #print(best_ind)
 
 
-    #return best_ind
+
+
+    return best_ind

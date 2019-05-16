@@ -28,7 +28,7 @@ def arrange(guitar,file_path,style):
     segments = segment_midi(file_path,style)
 
     #Represent each note with {id:position}
-    complete_arrangement = dict()
+    complete_arrangement = []
 
     for segment in segments:
         # no_segments += 1
@@ -36,8 +36,16 @@ def arrange(guitar,file_path,style):
         # Previous result : If first segment then set to None
         previous_segment = complete_arrangement and complete_arrangement[-1] or None
         if segment.style=="seq":
-            get_seq_placements(guitar,segment,previous_segment)
+            complete_arrangement.append(get_seq_placements(guitar,segment,previous_segment))
             # print(plc)
+
+    complete_arrangement_dict = dict()
+
+    for segment in complete_arrangement:
+        for note in segment:
+            complete_arrangement_dict[note.id] = note.position
+
+    return complete_arrangement_dict
 
         #complete_arrangement.append(get_placements(guitar,segment, previous_result, style))
     #
