@@ -18,7 +18,7 @@ notes = Note_extractor.get_melody(file_path)
 #Create the midi file from notes
 Note_arranger.make_midi(notes,tempo)
 
-guitar = Guitar(6,24)
+guitar = Guitar(6,19)
 
 score,arrangement = Note_locator.arrange(guitar,midi_file_path,'lead')
 
