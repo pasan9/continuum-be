@@ -20,9 +20,9 @@ Note_arranger.make_midi(notes,tempo)
 
 guitar = Guitar(6,24)
 
-arrangement = Note_locator.arrange(guitar,midi_file_path,'lead')
+score,arrangement = Note_locator.arrange(guitar,midi_file_path,'lead')
 
-tab_string = Tab_constructor.getAlphaTex(arrangement,midi_file_path)
+tab_string = Tab_constructor.getAlphaTex(score,arrangement)
 
 
 

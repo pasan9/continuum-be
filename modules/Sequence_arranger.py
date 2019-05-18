@@ -96,13 +96,13 @@ def get_seq_placements(guitar,segment,previous_segment):
 
     pop = toolbox.population(n=MU)
     hof = tools.ParetoFront()
-    stats = tools.Statistics(lambda ind: ind.fitness.values)
-    stats.register("avg", np.mean, axis=0)
-    stats.register("std", np.std, axis=0)
-    stats.register("min", np.min, axis=0)
-    stats.register("max", np.max, axis=0)
+    # stats = tools.Statistics(lambda ind: ind.fitness.values)
+    # stats.register("avg", np.mean, axis=0)
+    # stats.register("std", np.std, axis=0)
+    # stats.register("min", np.min, axis=0)
+    # stats.register("max", np.max, axis=0)
 
-    algorithms.eaMuPlusLambda(pop, toolbox, MU, LAMBDA, CXPB, MUTPB, NGEN, stats,
+    algorithms.eaMuPlusLambda(pop, toolbox, MU, LAMBDA, CXPB, MUTPB, NGEN,
                                   halloffame=hof)
 
     #Get best individual : SelBest returns a list, get the first value

@@ -1,16 +1,21 @@
-from music21 import converter,meter
+from music21 import converter,meter,note
 
-def getAlphaTex(arrangement,file_path):
+def getAlphaTex(score,arrangement):
 
-    alphaTex_string = ''
+    alphaTex_string = '\\title Test Title \n'
 
-    song = converter.parse(file_path)
-    song = song.parts[0]
 
-    time_signature = song.timeSignature.ratioString
+    time_signature = score.timeSignature.ratioString
 
-    for measure in song.measures(0, None):
-        for event in measure.recurse().getElementsByClass(['Note','Chord','Rest']):
-            print(event)
 
+    for measure in score.measures(0, None):
+        for event in measure.recurse().getElementsByClass('Note'):
+            if (isinstance(event,note.Note)):
+                fret = arrangement[event.id][1]
+                string = 6-arrangement[event.id][0] #Assuming 6 String Guitar
+                duration = event.duration.quarterLength
+                #print('fret - %s , string - %s, duration - %s',fret,string,duration)
+                alphaTex_string += '%s.%s '%(fret,string)
+        alphaTex_string += "|\n"
+    print(alphaTex_string)
     return None

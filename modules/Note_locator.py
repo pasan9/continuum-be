@@ -2,30 +2,37 @@ from definitions.config import Paths
 from definitions.Note import Note
 from definitions.Segment import Segment
 from modules.Sequence_arranger import get_seq_placements
-from music21 import converter, corpus, instrument, midi, note, chord, pitch
+from music21 import converter, corpus, instrument, midi, chord, pitch
 
 midi_path = Paths.midi_path
 
+def readScore(file_path):
+    score = converter.parse(file_path)
+    score = score.parts[0]
 
+    #Tag all elements with a unique id
+    id = 0
+    for element in score.elements:
+        element.id = id
+        id += 1
 
-def segment_midi(file_path,style):
+    return score
+
+def segment_score(score,style):
     #score = open_midi(path)
-    song = converter.parse(file_path)
-    song = song.parts[0]
     segments = []
-    for measure in song.measures(0, None):
+    for measure in score.measures(0, None):
         segment = Segment(style='seq',notes=[])
         for note in measure.recurse().getElementsByClass('Note'):
-            print(note.id)
             segment.notes.append(Note(id=note.id,value=note.pitch.midi))
         segments.append(segment)
     return segments
 
-    # song.write("midi", midi_path+'m21midi.mid')
-
 def arrange(guitar,file_path,style):
 
-    segments = segment_midi(file_path,style)
+    score = readScore(file_path)
+
+    segments = segment_score(score,style)
 
     #Represent each note with {id:position}
     complete_arrangement = []
@@ -37,15 +44,14 @@ def arrange(guitar,file_path,style):
         previous_segment = complete_arrangement and complete_arrangement[-1] or None
         if segment.style=="seq":
             complete_arrangement.append(get_seq_placements(guitar,segment,previous_segment))
-            # print(plc)
 
     complete_arrangement_dict = dict()
 
-    for segment in complete_arrangement:
-        for note in segment:
+    for segment in segments:
+        for note in segment.notes:
             complete_arrangement_dict[note.id] = note.position
 
-    return complete_arrangement_dict
+    return score,complete_arrangement_dict
 
         #complete_arrangement.append(get_placements(guitar,segment, previous_result, style))
     #
