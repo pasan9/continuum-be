@@ -55,7 +55,7 @@ def get_seq_placements(guitar,segment,previous_result):
         total_fitness = total_fret_span + difference_with_previous_segment
 
         # if(style == 'fin'):
-        #     total_fitness += no_strings_depressed
+        total_fitness += no_strings_depressed
 
         return (total_fitness),
 
@@ -88,10 +88,7 @@ def get_seq_placements(guitar,segment,previous_result):
     toolbox.register("evaluate", evalInd)
     toolbox.register("mate", tools.cxTwoPoint)
     toolbox.register("mutate", mutate_ran_reset)
-    if(type=="cho"):
-        toolbox.register("select", tools.selNSGA2)
-    else:
-        toolbox.register("select", tools.selTournament, tournsize=tournament_selection_size)
+    toolbox.register("select", tools.selTournament, tournsize=tournament_selection_size)
 
     #Evolution Starts
     NGEN = 50
