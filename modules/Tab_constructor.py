@@ -25,4 +25,4 @@ def getAlphaTex(score,arrangement):
     alphaTex_final_string = ' |\n'.join(alphaTexMeasures)
 
     print(alphaTex_final_string)
-    return None
+    return alphaTex_final_string

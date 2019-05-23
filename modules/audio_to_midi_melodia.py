@@ -1,5 +1,3 @@
-# CREATED: 11/9/15 3:57 PM by Justin Salamon <justin.salamon@nyu.edu>
-
 import librosa
 import vamp
 import argparse
@@ -10,31 +8,6 @@ from scipy.signal import medfilt
 from definitions.Note import Note
 import jams
 # import __init__
-
-'''
-Extract the melody from an audio file and convert it to MIDI.
-
-The script extracts the melody from an audio file using the Melodia algorithm,
-and then segments the continuous pitch sequence into a series of quantized
-notes, and exports to MIDI using the provided BPM. If the --jams option is
-specified the script will also save the output as a JAMS file. Note that the
-JAMS file uses the original note onset/offset times estimated by the algorithm
-and ignores the provided BPM value.
-
-Note: Melodia can work pretty well and is the result of several years of
-research. The note segmentation/quantization code was hacked in about 30
-minutes. Proceed at your own risk... :)
-
-usage: audio_to_midi_melodia.py [-h] [--smooth SMOOTH]
-                                [--minduration MINDURATION] [--jams]
-                                infile outfile bpm
-
-
-Examples:
-python audio_to_midi_melodia.py --smooth 0.25 --minduration 0.1 --jams
-                                ~/song.wav ~/song.mid 60
-'''
-
 
 def save_jams(jamsfile, notes, track_duration, orig_filename):
 

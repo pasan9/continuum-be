@@ -8,7 +8,14 @@ from music21 import converter, corpus, instrument, midi, chord, pitch
 midi_path = Paths.midi_path
 
 def readScore(file_path):
-    score = converter.parse(file_path)
+    mf = midi.MidiFile()
+    mf.open(file_path)
+    mf.read()
+    mf.close()
+
+    score = midi.translate.midiFileToStream(mf)
+
+    #score = converter.parse(file_path)
     score = score.parts[0]
 
     #Tag all elements with a unique id
