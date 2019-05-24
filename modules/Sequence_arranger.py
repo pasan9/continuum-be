@@ -4,9 +4,11 @@ import copy
 import numpy as np
 import random
 
+random.seed(64)
+
 # Set Fitness and Individual Types
 creator.create("FitnessMin", base.Fitness, weights=(-1.0,))
-creator.create("Individual", list, fitness=creator.FitnessMin)
+creator.create("SeqIndividual", list, fitness=creator.FitnessMin)
 
 def get_seq_placements(guitar,segment,previous_result):
     # Population size and tourn select size: TODO Make them depend on the segment size
@@ -81,7 +83,7 @@ def get_seq_placements(guitar,segment,previous_result):
 
 
     # Define how to generate individual and population
-    toolbox.register("individual", tools.initIterate, creator.Individual, create_individual)
+    toolbox.register("individual", tools.initIterate, creator.SeqIndividual, create_individual)
     toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
     # Define evolutionary functions

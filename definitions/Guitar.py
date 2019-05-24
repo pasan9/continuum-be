@@ -1,6 +1,8 @@
 import numpy as np
 import random
 
+random.seed(64)
+
 class Guitar:
     # Standard Tuning in MIDI
     standard_tuning_midi = [64, 59, 55, 50, 45, 40]

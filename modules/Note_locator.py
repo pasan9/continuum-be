@@ -2,6 +2,7 @@ from definitions.config import Paths
 from definitions.Note import Note
 from definitions.Segment import Segment
 from modules.Sequence_arranger import get_seq_placements
+from modules.Chord_arranger import get_chord_placements
 import music21
 #from music21 import converter, corpus, instrument, midi, chord, pitch, stream, note
 
@@ -67,10 +68,13 @@ def segment_score(score,style):
         seq_segment = Segment(style='seq', notes=[])
         for event in mixed_segments:
             if (isinstance(event, Note)):
-                seq_segment.notes.append(Note)
+                seq_segment.notes.append(event)
             else:
                 if (seq_segment.notes):
-                    segments.append(seq_segment)
+                    if (len(seq_segment.notes) < 2):
+                        event.notes.append(seq_segment.notes[0])
+                    else:
+                        segments.append(seq_segment)
                     seq_segment = Segment(style='seq', notes=[])
                 segments.append(event)
         return segments
@@ -94,10 +98,15 @@ def arrange(guitar,file_path,style):
         # Previous result : If first segment then set to None
         previous_segment = complete_arrangement and complete_arrangement[-1] or None
         if segment.style=="seq":
+            # print(segment.notes)
             positions = get_seq_placements(guitar,segment.get_flat_note_vals(),previous_segment)
             complete_arrangement.append(positions)
-            for note,position in zip(segment.notes, positions):
-                complete_arrangement_dict[note.id] = position
+        else :
+            positions = get_chord_placements(guitar, segment.get_flat_note_vals(), previous_segment)
+            complete_arrangement.append(positions)
+        for note,position in zip(segment.notes, positions):
+            complete_arrangement_dict[note.id] = position
+
             # for i in enumerate(segment.notes,positions):
             #     complete_arrangement_dict[segment.notes[i].id] = positions[i]
 
