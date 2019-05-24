@@ -2,18 +2,19 @@ from definitions.config import Paths
 from definitions.Note import Note
 from definitions.Segment import Segment
 from modules.Sequence_arranger import get_seq_placements
-from music21 import converter, corpus, instrument, midi, chord, pitch
+import music21
+#from music21 import converter, corpus, instrument, midi, chord, pitch, stream, note
 
 
 midi_path = Paths.midi_path
 
 def readScore(file_path):
-    mf = midi.MidiFile()
+    mf = music21.midi.MidiFile()
     mf.open(file_path)
     mf.read()
     mf.close()
 
-    score = midi.translate.midiFileToStream(mf)
+    score = music21.midi.translate.midiFileToStream(mf)
 
     #score = converter.parse(file_path)
     score = score.parts[0]
@@ -21,20 +22,60 @@ def readScore(file_path):
     #Tag all elements with a unique id
     id = 0
     for element in score.elements:
+        #Notes and other elements
         element.id = id
         id += 1
-
+        #Chords and notes inside them
+        if isinstance(element, music21.chord.Chord):
+            for note in element:
+                note.id = id
+                id += 1
+        #Check if a normal element or a voice
+        if isinstance(element, music21.stream.Voice):
+            for innerElement in element:
+                innerElement.id = id
+                id += 1
+                if isinstance(innerElement,music21.chord.Chord):
+                    for note in innerElement:
+                        note.id = id
+                        id+=1
     return score
 
 def segment_score(score,style):
-    #score = open_midi(path)
-    segments = []
-    for measure in score.measures(0, None):
-        segment = Segment(style='seq',notes=[])
-        for note in measure.recurse().getElementsByClass('Note'):
-            segment.notes.append(Note(id=note.id,value=note.pitch.midi))
-        segments.append(segment)
-    return segments
+    #Simply segment by measures for lead guitar
+    if style == 'Lead':
+        segments = []
+        for measure in score.measures(0, None):
+            segment = Segment(style='seq',notes=[])
+            for note in measure.recurse().getElementsByClass('Note'):
+                segment.notes.append(Note(id=note.id,value=note.pitch.midi))
+            segments.append(segment)
+        return segments
+    else:
+        mixed_segments = [] #Put Note events and chord segments to fully segment later
+        for element in score.flat.elements:
+            if isinstance(element,music21.note.Note):
+                mixed_segments.append(Note(id=element.id,value=element.pitch.midi))
+            elif isinstance(element,music21.chord.Chord):
+                segment = Segment(style='cho', notes=[])
+                for note in element:
+                    segment.notes.append(Note(id=note.id, value=note.pitch.midi))
+                mixed_segments.append(segment)
+
+        #Find sequence segments and append
+        segments = []
+        seq_segment = Segment(style='seq', notes=[])
+        for event in mixed_segments:
+            if (isinstance(event, Note)):
+                seq_segment.notes.append(Note)
+            else:
+                if (seq_segment.notes):
+                    segments.append(seq_segment)
+                    seq_segment = Segment(style='seq', notes=[])
+                segments.append(event)
+        return segments
+
+
 
 def arrange(guitar,file_path,style):
 

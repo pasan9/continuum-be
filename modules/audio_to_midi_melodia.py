@@ -131,11 +131,11 @@ def get_melody(infile,smooth=0.25, minduration=0.1):
     hop = 128
 
     # load audio using librosa
-    print("Loading audio...")
+    # print("Loading audio...")
     data, sr = librosa.load(infile, sr=fs, mono=True)
 
     # extract melody using melodia vamp plugin
-    print("Extracting melody..")
+    # print("Extracting melody..")
     melody = vamp.collect(data, sr, "mtg-melodia:melodia",
                           parameters={"voicing": 0.2})
 
@@ -176,23 +176,23 @@ def get_melody(infile,smooth=0.25, minduration=0.1):
     # print("Conversion complete.")
 
 
-if __name__ == "__main__":
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("infile", help="Path to input audio file.")
-    parser.add_argument("outfile", help="Path for saving output MIDI file.")
-    parser.add_argument("bpm", type=int, help="Tempo of the track in BPM.")
-    parser.add_argument("--smooth", type=float, default=0.25,
-                        help="Smooth the pitch sequence with a median filter "
-                             "of the provided duration (in seconds).")
-    parser.add_argument("--minduration", type=float, default=0.1,
-                        help="Minimum allowed duration for note (in seconds). "
-                             "Shorter notes will be removed.")
-    parser.add_argument("--jams", action="store_const", const=True,
-                        default=False, help="Also save output in JAMS format.")
-
-    args = parser.parse_args()
-
-    audio_to_midi_melodia(args.infile, args.outfile, args.bpm,
-                          smooth=args.smooth, minduration=args.minduration,
-                          savejams=args.jams)
+# if __name__ == "__main__":
+#
+#     parser = argparse.ArgumentParser()
+#     parser.add_argument("infile", help="Path to input audio file.")
+#     parser.add_argument("outfile", help="Path for saving output MIDI file.")
+#     parser.add_argument("bpm", type=int, help="Tempo of the track in BPM.")
+#     parser.add_argument("--smooth", type=float, default=0.25,
+#                         help="Smooth the pitch sequence with a median filter "
+#                              "of the provided duration (in seconds).")
+#     parser.add_argument("--minduration", type=float, default=0.1,
+#                         help="Minimum allowed duration for note (in seconds). "
+#                              "Shorter notes will be removed.")
+#     parser.add_argument("--jams", action="store_const", const=True,
+#                         default=False, help="Also save output in JAMS format.")
+#
+#     args = parser.parse_args()
+#
+#     audio_to_midi_melodia(args.infile, args.outfile, args.bpm,
+#                           smooth=args.smooth, minduration=args.minduration,
+#                           savejams=args.jams)

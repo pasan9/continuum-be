@@ -3,7 +3,8 @@ from madmom.features.chords import DeepChromaChordRecognitionProcessor
 from madmom.processors import SequentialProcessor
 from definitions.Note import Note
 
-midi_dict = {'C':24,'C#':25,'D':26,'D#':27,'E':28,'F':29,'F#':30,'G':31,'G#':32,'A':33,'A#':34,'B':35}
+# midi_dict = {'C':24,'C#':25,'D':26,'D#':27,'E':28,'F':29,'F#':30,'G':31,'G#':32,'A':33,'A#':34,'B':35}
+midi_dict = {'C':48,'C#':49,'D':50,'D#':51,'E':40,'F':41,'F#':42,'G':43,'G#':44,'A':45,'A#':46,'B':47}
 
 dcp = DeepChromaProcessor()
 decode = DeepChromaChordRecognitionProcessor()
