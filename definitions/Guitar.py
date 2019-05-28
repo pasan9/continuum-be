@@ -1,8 +1,6 @@
 import numpy as np
 import random
 
-random.seed(64)
-
 class Guitar:
     # Standard Tuning in MIDI
     standard_tuning_midi = [64, 59, 55, 50, 45, 40]
@@ -33,3 +31,8 @@ class Guitar:
 
     def get_note_from_position(self,position):
         return self.fretboard.item(position)
+
+    def get_range(self):
+        lower_bound = self.fretboard.min()
+        upper_bound = self.fretboard.max()
+        return (lower_bound,upper_bound)

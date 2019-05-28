@@ -69,13 +69,12 @@ def arrangeSong(file_path,style):
     y, sr = librosa.load(file_path)
     tempo, beat_frames = librosa.beat.beat_track(y=y,sr=sr)
 
+    guitar = Guitar(6,19)
 
-    notes = Note_extractor.extract_notes(file_path,style)
+    notes = Note_extractor.extract_notes(file_path,style,guitar)
 
     #Create the midi file from notes
     Note_arranger.make_midi(notes,tempo)
-
-    guitar = Guitar(6,19)
 
     score,arrangement = Note_locator.arrange(guitar,midi_file_path,style)
 

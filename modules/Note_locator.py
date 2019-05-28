@@ -47,6 +47,7 @@ def segment_score(score,style):
     if style == 'Lead':
         segments = []
         for measure in score.measures(0, None):
+            #x = len(measure.recurse().getElementsByClass('Note'))
             segment = Segment(style='seq',notes=[])
             for note in measure.recurse().getElementsByClass('Note'):
                 segment.notes.append(Note(id=note.id,value=note.pitch.midi))
