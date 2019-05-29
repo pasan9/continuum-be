@@ -69,7 +69,7 @@ def arrangeSong(file_path,style):
     y, sr = librosa.load(file_path)
     tempo, beat_frames = librosa.beat.beat_track(y=y,sr=sr)
 
-    guitar = Guitar(6,19)
+    guitar = Guitar(6,10)
 
     notes = Note_extractor.extract_notes(file_path,style,guitar)
 
@@ -78,9 +78,8 @@ def arrangeSong(file_path,style):
 
     score,arrangement = Note_locator.arrange(guitar,midi_file_path,style)
 
-    #print(arrangement)
 
-    tab_string = Tab_constructor.getAlphaTex(score,arrangement)
+    tab_string = Tab_constructor.getAlphaTex(score,arrangement,style)
 
     return tab_string
 
