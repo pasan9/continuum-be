@@ -131,11 +131,11 @@ def get_melody(infile,smooth=0.25, minduration=0.1):
     hop = 128
 
     # load audio using librosa
-    # print("Loading audio...")
+    print("Loading audio...")
     data, sr = librosa.load(infile, sr=fs, mono=True)
 
     # extract melody using melodia vamp plugin
-    # print("Extracting melody..")
+    print("Extracting melody..")
     melody = vamp.collect(data, sr, "mtg-melodia:melodia",
                           parameters={"voicing": 0.2})
 

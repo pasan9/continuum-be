@@ -131,9 +131,19 @@ def arrange(guitar,file_path,style):
         # no_notes += len(segment)
         # Previous result : If first segment then set to None
         previous_segment = complete_arrangement and complete_arrangement[-1] or None
-        if segment.style=="seq":
+
+        if (len(segment.notes)<1):
+            continue
+
+        elif (len(segment.notes)<2):
+            prev_position = previous_segment and previous_segment[-1] or None
+            positions = [guitar.find_nearest(segment.notes[0].value,prev_position)]
+            complete_arrangement.append(positions)
+
+        elif segment.style=="seq":
             positions = get_seq_placements(guitar,segment.get_flat_note_vals(),previous_segment)
             complete_arrangement.append(positions)
+
         else :
             positions = get_chord_placements(guitar, segment.get_flat_note_vals(), previous_segment)
             complete_arrangement.append(positions)

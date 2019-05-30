@@ -13,8 +13,9 @@ def extract_notes(file_path,style,guitar):
     else:
         chords = get_chords(file_path)
         for chord in chords:
-            for note in chord:
-                extracted_notes.append(note)
+            if chord is not None:
+                for note in chord:
+                    extracted_notes.append(note)
         return extracted_notes
 
 

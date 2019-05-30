@@ -37,7 +37,6 @@ def get_seq_placements(guitar,segment,previous_result):
         if(previous_result):
             difference_with_previous_segment += abs(previous_result[-1][1]-individual[0][1])
 
-
         min_fret = individual[0][1]
         max_fret = 0
 

@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import math
 
 class Guitar:
     # Standard Tuning in MIDI
@@ -36,3 +37,36 @@ class Guitar:
         lower_bound = self.fretboard.min()
         upper_bound = self.fretboard.max()
         return (lower_bound,upper_bound)
+
+    def find_frontmost(self,note_val):
+        positions = self.get_positions(note_val)
+        min_position = positions[0]
+
+        for position in positions:
+            if (position[0]<min_position[0]):
+                min_position = position
+
+        return min_position
+
+    def find_nearest(self,note_val,prev_position):
+        if prev_position is None:
+            return self.find_frontmost(note_val)
+
+        positions = self.get_positions(note_val)
+        min_position = positions[0]
+        for position in positions:
+            current_dis = self.get_euc_distance(min_position,prev_position)
+            new_dis = self.get_euc_distance(position,prev_position)
+            if(new_dis < current_dis):
+                min_position = position
+
+        return min_position
+
+
+    def get_euc_distance(self,pos1,pos2):
+        distance = math.sqrt(((pos1[0] - pos2[0]) ** 2) + ((pos1[1] - pos2[1]) ** 2))
+        return distance
+
+
+
+
