@@ -1,5 +1,5 @@
 from flask import Flask, request, redirect, url_for, Response
-from modules import Note_extractor,Note_arranger,Note_locator,Tab_constructor
+from modules import Note_extractor,Note_arranger,Note_locator,MIDI_synth,Tab_constructor
 from definitions.config import Paths
 from definitions.Guitar import Guitar
 import librosa
@@ -13,6 +13,8 @@ midi_path = Paths.midi_path
 audio_path = Paths.audio_path
 file_path = audio_path + 'sal_audio.mp3'
 midi_file_path = midi_path+'song.mid'
+gen_audio_path = Paths.generated_audio_path
+gen_audio_file_path = gen_audio_path+'song.mp3'
 
 UPLOAD_FOLDER = '/home/pasan/Projects/continuum-final/audio'
 ALLOWED_EXTENSIONS = set(['wav','mp3'])
@@ -75,6 +77,8 @@ def arrangeSong(file_path,style):
 
     #Create the midi file from notes
     Note_arranger.make_midi(notes,tempo)
+
+    MIDI_synth.writeAudio(midi_file_path,gen_audio_file_path)
 
     score,arrangement = Note_locator.arrange(guitar,midi_file_path,style)
 

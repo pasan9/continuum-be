@@ -6,6 +6,7 @@ deap==1.2.2
 decorator==4.4.0
 essentia==2.1b5.dev532
 Flask==1.0.3
+fluidsynth==0.2
 future==0.17.1
 itsdangerous==1.1.0
 jams==0.3.3
@@ -18,6 +19,7 @@ llvmlite==0.28.0
 madmom==0.16.1
 MarkupSafe==1.1.1
 matplotlib==3.1.0
+midi2audio==0.1.1
 MIDIUtil==1.2.1
 mido==1.2.9
 mir-eval==0.5
