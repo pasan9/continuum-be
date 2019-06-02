@@ -1,6 +1,6 @@
 class Segment:
 
-    def __init__(self,style=None,notes=None):
+    def __init__(self,style=None,notes=[]):
         self.style = style
         self.notes = notes
     #Returns sequence of MIDI valus of the Notes

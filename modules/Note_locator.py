@@ -11,40 +11,6 @@ import mido
 midi_path = Paths.midi_path
 
 def readScore(file_path,style):
-
-    if (style=='Lead'):
-        mf = music21.midi.MidiFile()
-        mf.open(file_path)
-        mf.read()
-        mf.close()
-
-        score = music21.midi.translate.midiFileToStream(mf)
-
-        #score = converter.parse(file_path)
-        score = score.parts[0]
-
-        #Tag all elements with a unique id
-        id = 0
-        for element in score.elements:
-            #Notes and other elements
-            element.id = id
-            id += 1
-            #Chords and notes inside them
-            if isinstance(element, music21.chord.Chord):
-                for note in element:
-                    note.id = id
-                    id += 1
-            #Check if a normal element or a voice
-            if isinstance(element, music21.stream.Voice):
-                for innerElement in element:
-                    innerElement.id = id
-                    id += 1
-                    if isinstance(innerElement,music21.chord.Chord):
-                        for note in innerElement:
-                            note.id = id
-                            id+=1
-        return score
-    else:
         mid = mido.MidiFile(file_path)
         notes = []
         track = mid.tracks[0]
@@ -65,12 +31,12 @@ def segment_score(score,style):
     #Simply segment by measures for lead guitar
     if style == 'Lead':
         segments = []
-        for measure in score.measures(0, None):
-            #x = len(measure.recurse().getElementsByClass('Note'))
-            segment = Segment(style='seq',notes=[])
-            for note in measure.recurse().getElementsByClass('Note'):
-                segment.notes.append(Note(id=note.id,value=note.pitch.midi))
-            segments.append(segment)
+        segment = Segment(style='seq')
+        for i,note in enumerate(score):
+            segment.notes.append(note)
+            if (i != 0 and i%5 == 0) or i == len(score)-1:
+                segments.append(segment)
+                segment = Segment(style='seq')
         return segments
     else:
         mixed_segments = [] #Put Note events and chord segments to fully segment later
