@@ -7,6 +7,7 @@ import os
 import tempfile
 from werkzeug.utils import secure_filename
 import json
+import base64
 
 
 midi_path = Paths.midi_path
@@ -54,9 +55,9 @@ def upload_file():
 
             style = request.form.get('playing_style')
 
-            tabString = arrangeSong(app.config['UPLOAD_FOLDER']+'/'+filename,style)
+            midi_encoded,tabString = arrangeSong(app.config['UPLOAD_FOLDER']+'/'+filename,style)
 
-            resp = construct_response({'tab_string':tabString},200)
+            resp = construct_response({'tab_string':tabString,'midi_encoded':midi_encoded},200)
 
             return resp
     return None
@@ -78,14 +79,19 @@ def arrangeSong(file_path,style):
     #Create the midi file from notes
     Note_arranger.make_midi(notes,tempo)
 
-    MIDI_synth.writeAudio(midi_file_path,gen_audio_file_path)
+    # MIDI_synth.writeAudio(midi_file_path,gen_audio_file_path)
 
     score,arrangement = Note_locator.arrange(guitar,midi_file_path,style)
 
+    #Convert the midi file to base 64
+    encoded_string = ""
+    with open(midi_file_path, "rb") as midi_file:
+        encoded_string = base64.b64encode(midi_file.read()).decode("utf-8")
 
     tab_string = Tab_constructor.getAlphaTex(score,arrangement,style)
 
-    return tab_string
+
+    return encoded_string,tab_string
 
 def construct_response(data,status):
     json_data = json.dumps(data)
