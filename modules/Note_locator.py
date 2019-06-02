@@ -31,12 +31,12 @@ def segment_score(score,style):
     #Simply segment by measures for lead guitar
     if style == 'Lead':
         segments = []
-        segment = Segment(style='seq')
+        segment_notes = []
         for i,note in enumerate(score):
-            segment.notes.append(note)
+            segment_notes.append(note)
             if (i != 0 and i%5 == 0) or i == len(score)-1:
-                segments.append(segment)
-                segment = Segment(style='seq')
+                segments.append(Segment(style='seq',notes=segment_notes))
+                segment_notes = []
         return segments
     else:
         mixed_segments = [] #Put Note events and chord segments to fully segment later
